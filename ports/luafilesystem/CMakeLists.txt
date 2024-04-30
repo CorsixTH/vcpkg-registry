@@ -22,7 +22,7 @@ include(CMakePackageConfigHelpers)
 configure_package_config_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/unofficial-${PROJECT_NAME}-config.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/unofficial-${PROJECT_NAME}-config.cmake"
-  INSTALL_DESTINATION "share/${PROJECT_NAME}"
+  INSTALL_DESTINATION "share/unofficial-${PROJECT_NAME}"
 )
 
 set(VERSION_FILE_PATH "${CMAKE_CURRENT_BINARY_DIR}/unofficial-${PROJECT_NAME}-config-version.cmake")
@@ -34,10 +34,10 @@ write_basic_package_version_file(
 
 install(
   FILES "${CMAKE_CURRENT_BINARY_DIR}/unofficial-${PROJECT_NAME}-config.cmake"
-  DESTINATION "share/${PROJECT_NAME}"
+  DESTINATION "share/unofficial-${PROJECT_NAME}"
 )
 
 install(
   EXPORT      "unofficial-lfs-targets"
   NAMESPACE   "unofficial::${PROJECT_NAME}::"
-  DESTINATION "share/${PROJECT_NAME}")
+  DESTINATION "share/unofficial-${PROJECT_NAME}")
