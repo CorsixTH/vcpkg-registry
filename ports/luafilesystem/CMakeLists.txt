@@ -12,7 +12,7 @@ target_include_directories(lfs PRIVATE ${LFS_INCLUDES})
 target_link_libraries(lfs PRIVATE ${LFS_LIBRARIES})
 
 install(TARGETS lfs
-    EXPORT lfsTargets
+    EXPORT "unofficial-lfs-targets"
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
@@ -20,12 +20,12 @@ install(TARGETS lfs
 include(CMakePackageConfigHelpers)
 
 configure_package_config_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+  "${CMAKE_CURRENT_SOURCE_DIR}/unofficial-${PROJECT_NAME}-config.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/unofficial-${PROJECT_NAME}-config.cmake"
   INSTALL_DESTINATION "share/${PROJECT_NAME}"
 )
 
-set(VERSION_FILE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake")
+set(VERSION_FILE_PATH "${CMAKE_CURRENT_BINARY_DIR}/unofficial-${PROJECT_NAME}-config-version.cmake")
 write_basic_package_version_file(
   "${VERSION_FILE_PATH}"
   VERSION       "${LFS_VERSION}"
@@ -33,11 +33,11 @@ write_basic_package_version_file(
 )
 
 install(
-  FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/unofficial-${PROJECT_NAME}-config.cmake"
   DESTINATION "share/${PROJECT_NAME}"
 )
 
 install(
-  EXPORT      "lfsTargets"
-  NAMESPACE   "${PROJECT_NAME}::"
+  EXPORT      "unofficial-lfs-targets"
+  NAMESPACE   "unofficial::${PROJECT_NAME}::"
   DESTINATION "share/${PROJECT_NAME}")
