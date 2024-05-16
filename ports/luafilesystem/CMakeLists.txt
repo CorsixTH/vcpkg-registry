@@ -12,7 +12,7 @@ target_include_directories(lfs PRIVATE ${LFS_INCLUDES})
 target_link_libraries(lfs PRIVATE ${LFS_LIBRARIES})
 
 install(TARGETS lfs
-    EXPORT "unofficial-lfs-targets"
+    EXPORT "unofficial-${PROJECT_NAME}-targets"
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
@@ -38,6 +38,6 @@ install(
 )
 
 install(
-  EXPORT      "unofficial-lfs-targets"
+  EXPORT      "unofficial-${PROJECT_NAME}-targets"
   NAMESPACE   "unofficial::${PROJECT_NAME}::"
   DESTINATION "share/unofficial-${PROJECT_NAME}")
