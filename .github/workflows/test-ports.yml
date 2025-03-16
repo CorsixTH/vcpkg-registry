@@ -1,0 +1,29 @@
+name: Test vcpkg ports
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Get CMake
+      uses: lukka/get-cmake@v3.28.3
+
+    - name: Setup vcpkg
+      uses: lukka/run-vcpkg@v11
+      with:
+        vcpkgGitCommitId: '5f4628b89f3f98cd9a0b43c27ded2aa53da1f790'
+
+    - name: Build ports
+      run: ${{ github.workspace }}/vcpkg/vcpkg install
+      env:
+        VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+        VCPKG_OVERLAY_PORTS: "${{ github.workspace }}/ports"
+      shell: bash
