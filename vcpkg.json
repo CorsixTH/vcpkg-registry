@@ -1,0 +1,8 @@
+{
+  "dependencies": [
+    "ffmpeg",
+    "sdl2-mixer",
+    "lpeg",
+    "luafilesystem"
+  ]
+}
