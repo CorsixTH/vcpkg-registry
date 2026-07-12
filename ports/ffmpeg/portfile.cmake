@@ -670,6 +670,13 @@ else()
     set(WITH_RUBBERBAND OFF)
 endif()
 
+# Disable codecs and devices unused by CorsixTH
+set (OPTIONS "${OPTIONS} --disable-encoders")
+set (OPTIONS "${OPTIONS} --disable-decoders --enable-decoder=smacker --enable-decoder=smackaud")
+set (OPTIONS "${OPTIONS} --disable-muxers")
+set (OPTIONS "${OPTIONS} --disable-demuxers --enable-demuxer=smacker")
+set (OPTIONS "${OPTIONS} --disable-indevs")
+
 set(OPTIONS_CROSS "--enable-cross-compile")
 
 # ffmpeg needs --cross-prefix option to use appropriate tools for cross-compiling.
@@ -789,7 +796,7 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
 endif()
 
 if(VCPKG_TARGET_IS_MINGW)
-    set(OPTIONS "${OPTIONS} --extra_cflags=-D_WIN32_WINNT=0x0601")
+    set(OPTIONS "${OPTIONS} --extra-cflags=-D_WIN32_WINNT=0x0601")
 elseif(VCPKG_TARGET_IS_WINDOWS)
     set(OPTIONS "${OPTIONS} --extra-cflags=-DHAVE_UNISTD_H=0")
 endif()
