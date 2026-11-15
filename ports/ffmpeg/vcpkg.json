@@ -1,13 +1,13 @@
 {
   "name": "ffmpeg",
-  "version": "8.1.1",
-  "port-version": 1,
+  "version": "9.0.2",
+  "port-version": 7,
   "description": [
     "A library to decode, encode, transcode, mux, demux, stream, filter and play pretty much anything that humans and machines have created.",
     "FFmpeg is the leading multimedia framework, able to decode, encode, transcode, mux, demux, stream, filter and play pretty much anything that humans and machines have created. It supports the most obscure ancient formats up to the cutting edge. No matter if they were designed by some standards committee, the community or a corporation. It is also highly portable: FFmpeg compiles, runs, and passes our testing infrastructure FATE across Linux, Mac OS X, Microsoft Windows, the BSDs, Solaris, etc. under a wide variety of build environments, machine architectures, and configurations."
   ],
   "homepage": "https://ffmpeg.org",
-  "license": "LGPL-2.1-or-later",
+  "license": null,
   "dependencies": [
     {
       "name": "ffmpeg-bin2c",
@@ -55,6 +55,7 @@
             "iconv",
             "lzma",
             "mp3lame",
+            "network",
             "openjpeg",
             "openmpt",
             "opus",
@@ -165,17 +166,17 @@
           "name": "ffmpeg",
           "default-features": false,
           "features": [
-            "opengl"
+            "svt-av1"
           ],
-          "platform": "!uwp & !(arm64 & windows)"
+          "platform": "!x86 & !arm32 & !uwp"
         },
         {
           "name": "ffmpeg",
           "default-features": false,
           "features": [
-            "tensorflow"
+            "opengl"
           ],
-          "platform": "x64 & !static & !uwp & !windows"
+          "platform": "!uwp & !(arm64 & windows)"
         },
         {
           "name": "ffmpeg",
@@ -284,7 +285,11 @@
     "ass": {
       "description": "Libass subtitles rendering, needed for subtitles and ass filter support in ffmpeg",
       "dependencies": [
-        "libass"
+        "libass",
+        {
+          "name": "libiconv",
+          "platform": "windows & static"
+        }
       ]
     },
     "avcodec": {
@@ -491,6 +496,9 @@
         "mp3lame"
       ]
     },
+    "network": {
+      "description": "Enable networking and the network protocols (HTTP, RTMP, TLS, etc.). Without it, only the local protocols (file, pipe, etc.) are built and no TLS library (schannel, SecureTransport, OpenSSL) is linked. With it, TLS uses schannel on Windows and SecureTransport on macOS/iOS unless the openssl feature is selected."
+    },
     "nonfree": {
       "description": "Allow use of nonfree code, the resulting libs and binaries will be unredistributable"
     },
@@ -541,6 +549,7 @@
           "name": "ffmpeg",
           "default-features": false,
           "features": [
+            "network",
             "version3"
           ]
         },
@@ -618,13 +627,34 @@
       "description": "Haivision SRT protocol",
       "supports": "!uwp",
       "dependencies": [
+        {
+          "name": "ffmpeg",
+          "default-features": false,
+          "features": [
+            "network"
+          ]
+        },
         "libsrt"
       ]
     },
     "ssh": {
       "description": "SFTP protocol via libssh",
       "dependencies": [
+        {
+          "name": "ffmpeg",
+          "default-features": false,
+          "features": [
+            "network"
+          ]
+        },
         "libssh"
+      ]
+    },
+    "svt-av1": {
+      "description": "AV1 encoding via libSvtAv1Enc",
+      "supports": "!x86 & !arm32 & !uwp",
+      "dependencies": [
+        "svt-av1"
       ]
     },
     "swresample": {
@@ -632,13 +662,6 @@
     },
     "swscale": {
       "description": "Build the swscale library"
-    },
-    "tensorflow": {
-      "description": "TensorFlow as a DNN module backend for DNN based filters like sr",
-      "supports": "!static",
-      "dependencies": [
-        "tensorflow"
-      ]
     },
     "tesseract": {
       "description": "Tesseract, needed for ocr filter",
@@ -693,8 +716,13 @@
       ]
     },
     "vulkan": {
-      "description": "H.264, HEVC and AV1 de/encoding via Vulkan",
+      "description": "Vulkan video de/encoding (H.264, HEVC, AV1), Vulkan encoding (FFV1, ProRes), and Vulkan filters",
       "dependencies": [
+        {
+          "name": "shaderc",
+          "host": true
+        },
+        "spirv-headers",
         "vulkan-headers"
       ]
     },
@@ -745,6 +773,13 @@
     "zmq": {
       "description": "Enable ZeroMQ support",
       "dependencies": [
+        {
+          "name": "ffmpeg",
+          "default-features": false,
+          "features": [
+            "network"
+          ]
+        },
         "zeromq"
       ]
     }
