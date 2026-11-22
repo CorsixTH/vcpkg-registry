@@ -31,8 +31,14 @@ if(NOT z_vcpkg_using_vcpkg_find_ffmpeg AND NOT "@BUILD_SHARED_LIBS@")
 
 include(SelectLibraryConfigurations)
 
-if(CMAKE_HOST_WIN32)
-  set(PKG_CONFIG_EXECUTABLE "${CMAKE_CURRENT_LIST_DIR}/../../../@_HOST_TRIPLET@/tools/pkgconf/pkgconf.exe" CACHE STRING "" FORCE)
+# On Windows, default to the pkgconf vcpkg installs for the host. Leave a
+# PKG_CONFIG_EXECUTABLE or PKG_CONFIG the user set alone, and if pkgconf is not
+# where vcpkg installs it, let FindPkgConfig search as usual.
+if(CMAKE_HOST_WIN32 AND NOT PKG_CONFIG_EXECUTABLE AND "$ENV{PKG_CONFIG}" STREQUAL "")
+  find_program(PKG_CONFIG_EXECUTABLE NAMES pkgconf
+    PATHS "${CMAKE_CURRENT_LIST_DIR}/../../../@_HOST_TRIPLET@/tools/pkgconf"
+    NO_DEFAULT_PATH
+  )
 endif()
 set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON) # Required for CMAKE_MINIMUM_REQUIRED_VERSION VERSION_LESS 3.1 which otherwise ignores CMAKE_PREFIX_PATH
 find_package(PkgConfig)
@@ -133,6 +139,14 @@ if(@WITH_DAV1D@)
   list(APPEND FFMPEG_LIBRARIES PkgConfig::dav1d)
   if(vcpkg_no_avcodec_target AND TARGET FFmpeg::avcodec)
     target_link_libraries(FFmpeg::avcodec INTERFACE PkgConfig::dav1d)
+  endif()
+endif()
+
+if(@WITH_SVTAV1@)
+  pkg_check_modules(svtav1  IMPORTED_TARGET SvtAv1Enc)
+  list(APPEND FFMPEG_LIBRARIES PkgConfig::svtav1)
+  if(vcpkg_no_avcodec_target AND TARGET FFmpeg::avcodec)
+    target_link_libraries(FFmpeg::avcodec INTERFACE PkgConfig::svtav1)
   endif()
 endif()
 
@@ -325,6 +339,13 @@ elseif(@WITH_SCHANNEL@)
   list(APPEND FFMPEG_LIBRARIES secur32 ncrypt crypt32)
   if(vcpkg_no_avformat_target AND TARGET FFmpeg::avformat)
     target_link_libraries(FFmpeg::avformat INTERFACE secur32 ncrypt crypt32)
+  endif()
+elseif(@WITH_SECURETRANSPORT@)
+  # The APPLE branch above only forwards frameworks from libavcodec's
+  # pkg-config, and SecureTransport is linked into libavformat.
+  list(APPEND FFMPEG_LIBRARIES "-framework Security" "-framework CoreFoundation")
+  if(vcpkg_no_avformat_target AND TARGET FFmpeg::avformat)
+    target_link_libraries(FFmpeg::avformat INTERFACE "-framework Security" "-framework CoreFoundation")
   endif()
 endif()
 
